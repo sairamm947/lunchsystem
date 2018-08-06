@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+		
+	<!--  handlermapping.. default is beannameurlhandlermapping -->
+	<!--  <bean class="org.springframework.servlet.handler.beannameurlhandlermapping" /> -->
+	
+	
+	<!--  detects corresponding controllers by checking url pattern -->
+	<!--  <bean class="controller" name="./logincontroller" /> for auto scanning the corresponding methods -->
+	
+	<context:component-scan base-package="controllers.*"/>
+	<context:component-scan base-package="bean.*"/>
+	<context:component-scan base-package="dao.*"/>
+	<context:component-scan base-package="daoimpl.*"/>
+	<context:component-scan base-package="registerService.*"/>
+	<context:component-scan base-package="registerServiceImpl.*"/>
+	<!--  for injecting logindao bean  into controller -->	
+	
+	
+			<!--  view resolver..location of view page and extension of view page -->
+			
+	<bean class = "org.springframework.web.servlet.view.InternalResourceViewResolver">
+   <property name = "prefix" value = "/WEB-INF/jsp/"/>
+   <property name = "suffix" value = ".jsp"/>
+   </bean>
+	
+	<mvc:annotation-driven></mvc:annotation-driven>
+	
+	<!-- for static resources like css,imf,jsp files -->
+	<mvc:resources mapping="/resources/**" location="/resources/" cache-period="31556926"/>
+	<!--  connection pooling -->
+
+	<bean id="myDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+	
+	<property name="driverClass" value="oracle.jdbc.OracleDriver" />
+	<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:xe" />
+	<property name="user" value="sairam" />
+	<property name="password" value="sairam" />
+	
+	<property name="minPoolSize" value="3" />
+	<property name="maxPoolSize" value="10" />
+	<property name="maxIdleTime" value="30000" />
+	</bean>
+	
+	
+	
+	<!--  SessionFactory for creating connection with hibernate -->
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="myDataSource" />
+		<property name="packagesToScan" value="bean" /><!--  auto scann the bean class -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+			</props>
+		</property>
+</bean>
+
+
+	<!--  For Automatic Transactions  -->
+	
+<bean id="myTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+	<property name="sessionFactory" ref="sessionFactory" />
+</bean>
+	
+<tx:annotation-driven transaction-manager="myTransactionManager" />	
+	
+	<!--  file uploading -->
+	<bean id="multipartResolver"   
+class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>  
+
+</beans>  

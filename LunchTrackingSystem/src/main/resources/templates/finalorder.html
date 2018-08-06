@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<p th:text="${items}"></p>
+<p th:text="${price}"></p>
+<form action="#" th:action="@{/employee/orderconform}">
+		<input type="submit" value="Conform to Order">
+	</form>
+	<form action="#" th:action="@{/employee/showproducts/02/02}">
+		<input type="submit" value="Go To Cart">
+	</form>
+</body>
+</html>

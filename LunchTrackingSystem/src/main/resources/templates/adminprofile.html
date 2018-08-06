@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<link href="/static/css/styles.css" rel="stylesheet" type="text/css" />
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>Details</h3>
+<div th:each="user:${accounts}">
+<ul>
+<li><b>Employee ID : </b><span th:text="${user.employeeId}"></span></li>
+<li><b>Employee Name : </b><span th:text="${user.name}"></span></li>
+<li><b>Employee Email : </b><span th:text="${user.email}"></span></li>
+<li><b>Employee Mobile : </b><span th:text="${user.mobile}"></span></li>
+</ul>
+</div>
+<a th:href="@{/admin/addproduct}">Add Product</a>
+<a th:href="@{/admin/showproducts/01}">Show Products</a>
+</body>
+</html>
