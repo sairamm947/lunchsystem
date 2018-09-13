@@ -7,6 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<p style="color: red;"><b th:text="${msg}"></b></p>
 	<form action="#" th:action="@{/admin/login}" method="POST">
 		<table>
 			<tr>
@@ -17,7 +18,7 @@
 				<td>Employee password</td>
 				<td><input type="password" name="password" />
 			</tr>
-			<input type="hidden" name="role" th:value="${param.role}"/>
+			<input type="hidden" name="role" th:value="${role}"/>
 			
 			<tr>
 				<td colspan="2"><input type="submit" th:value="Submit" /> <input

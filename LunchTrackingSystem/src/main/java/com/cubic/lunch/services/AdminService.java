@@ -18,4 +18,6 @@ public interface AdminService {
 	List<Products> showproducts();
 
 	boolean checkproduct(String productid);
+
+	String pdfgen();
 }

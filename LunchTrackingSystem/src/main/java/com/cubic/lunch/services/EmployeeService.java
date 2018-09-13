@@ -20,7 +20,7 @@ public interface EmployeeService {
 
 	Integer finalAmount();
 
-	void conformorder();
+	String conformorder(Accounts sessionuserinfo);
 
 	void removesinglecart(String itemid);
 

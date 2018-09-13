@@ -3,16 +3,69 @@
 	xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <title>Insert title here</title>
 </head>
 <body>
-<p th:text="${items}"></p>
-<p th:text="${price}"></p>
-<form action="#" th:action="@{/employee/orderconform}">
-		<input type="submit" value="Conform to Order">
-	</form>
-	<form action="#" th:action="@{/employee/showproducts/02/02}">
-		<input type="submit" value="Go To Cart">
-	</form>
+<div class="container">
+
+		<div class="row">
+			<div class="col-lg-3"></div>
+			<div class="col-lg-6">
+			<b style="color: red;"><h3 th:action="${orderstatus}"></h3></b>
+				<h3>Your Cart</h3>
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<tr class="success">
+							<th>Product Name</th>
+							<th>Price</th>
+							<th>Quantity</th>
+							<th>Total</th>
+						</tr>
+
+						<tr th:each="element : ${cart}">
+							<div th:each="mapEntry : ${element}">
+								<div th:each="entry : ${mapEntry.value}">
+									<td th:text="${entry.products.productName}"></td>
+									<td th:text="${entry.products.price}"></td>
+									<td th:text="${(entry.TotalAount)/(entry.products.price)}"></td>
+									<td th:text="${entry.TotalAount}"></td>
+								</div>
+						</tr>
+					</table>
+
+
+
+					</tr>
+					</table>
+
+
+					<div class="table-responsive">
+						<table class="table table-bordered">
+
+							<th>Total Amount</th>
+							<th th:text="${price}"></th>
+						</table>
+
+					</div>
+					<form action="#" th:action="@{/employee/orderconform}">
+						<input type="submit" value="Conform Order">
+					</form>
+					<br>
+					<form action="#" th:action="@{/employee/showproducts/02/02}">
+						<input type="submit" value="Go To Cart">
+					</form>
+				</div>
+			</div>
+			<div class="col-lg-3"></div>
+		</div>
+	</div>
+	
+
+
+
+
+
 </body>
 </html>

@@ -22,6 +22,7 @@ import com.cubic.lunch.model.Cartinfo;
 import com.cubic.lunch.model.Products;
 import com.cubic.lunch.services.AdminService;
 import com.cubic.lunch.services.EmployeeService;
+import com.cubic.lunch.services.FinalCartService;
 
 @RestController
 @RequestMapping("/employee")
@@ -31,10 +32,18 @@ public class EmployeeController implements ErrorController{
 	private static final String PATH="/error";
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 	
-	@ModelAttribute("xyz")
-	public String getXyz() {
-		return "shankar";
+	public Accounts sessionuserinfo;
+	
+	public void userinfo(Accounts accounts) {
+		sessionuserinfo=accounts;
 	}
+	
+	@ModelAttribute("xyz")
+	public Accounts getXyz() {
+		
+		return sessionuserinfo;
+	}
+	
 	@RequestMapping(value=PATH)
 	public String DefaultErrorMessage() {
 		return "Requested Resource Not Available !!!";
@@ -51,6 +60,10 @@ public class EmployeeController implements ErrorController{
 	@Autowired
 	private EmployeeService cartservice;
 	
+	
+	/*@Autowired
+	private FinalCartService finalcartservice;*/
+	
 	@GetMapping("/showproduct")
 	public ModelAndView showproducts(@ModelAttribute("xyz") String xyz) {
 		System.out.println(xyz);
@@ -62,13 +75,17 @@ public class EmployeeController implements ErrorController{
 	
 	@GetMapping("/showproducts/02/{no}")
 	public ModelAndView showproduct(@PathVariable("no")String no) {
-		ModelAndView mav;
-		mav=new ModelAndView("menu");
+		ModelAndView mav=new ModelAndView();
 		mav.addObject("lists", service.showproducts());
 		mav.addObject("cart", cartservice.cart());
 		mav.addObject("price", cartservice.finalAmount());
 		if (no.equals("12")) {
 			mav.addObject("status", "Your Cart is Empty Please Select items");
+		}
+		if (no.equals("01")) {
+			mav.setViewName("finalorder");
+		}else {
+			mav.setViewName("menu");
 		}
 		return mav;
 	}
@@ -92,7 +109,7 @@ public class EmployeeController implements ErrorController{
 			mav.addObject("items", hashmap);
 			mav.addObject("price", cartservice.finalAmount());
 			
-			mav.setViewName("finalorder");
+			mav.setViewName("redirect:/employee/showproducts/02/01");
 		}
 		return mav;
 	}
@@ -109,11 +126,32 @@ public class EmployeeController implements ErrorController{
 		logger.info("Entered into single item remove from cart done:: controller");
 		return new ModelAndView("redirect:/employee/showproducts/02/02");
 	}
+	
 	@RequestMapping("/orderconform")
 	public ModelAndView orderconform() {
-		cartservice.conformorder();
-		return null;
+		ModelAndView mav=new ModelAndView();
+		//AdminController ac=new AdminController();
+		String orderstatus=cartservice.conformorder(sessionuserinfo);
+		if (orderstatus.equals("no")) {
+			mav.addObject("orderstatus","Order Not Placed");
+			logger.info("order Not completed");
+			mav.setViewName("finaloder");
+		} else {
+			mav.addObject("orderstatus",orderstatus);
+			logger.info("order completed");
+			mav.setViewName("orderover");
+		}
 		
+		
+		return mav;
+		
+	}
+	
+	@RequestMapping("/pdf")
+	public ModelAndView pdf() {
+		ModelAndView mav=new ModelAndView("adminprofile");
+		mav.addObject("state", service.pdfgen());
+		return mav;
 	}
 		
 }

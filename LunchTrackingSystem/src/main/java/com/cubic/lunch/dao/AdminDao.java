@@ -11,8 +11,11 @@ import com.cubic.lunch.model.Products;
 @Repository
 public interface AdminDao extends JpaRepository<Accounts, Integer>{
 
-	@Query(nativeQuery=true, value="select a.* from accounts a where a.Employee_Id=:name And a.password=:password")
-	Accounts getAccount(@Param("name")String name,@Param("password")String password);
+	@Query(nativeQuery=true, value="select a.* from accounts a where a.Employee_Id=:name And a.password=:password And a.role=:role")
+	Accounts getAccount(@Param("name")String name,@Param("password")String password,@Param("role")String role);
+
+	@Query(nativeQuery=true, value="select a.* from accounts a where a.Employee_Id=:id")
+	Accounts findOne(@Param("id")String id);
 
 	//void save(Products products);
 }

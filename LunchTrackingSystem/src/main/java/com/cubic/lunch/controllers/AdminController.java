@@ -5,7 +5,9 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,14 @@ public class AdminController implements ErrorController{
 	@Autowired
 	private AdminService service;
 	
+	@Autowired
+	private EmployeeController EmployeeController;
+	/*@Value("${block.url}")
+	private boolean isBlock;*/
+	
+	@Autowired
+	private Environment env;
+	public String id;
 	@GetMapping("/home")
 	public ModelAndView home() {
 		logger.info("Entered into home page controller method");
@@ -75,11 +85,22 @@ public class AdminController implements ErrorController{
 		ModelAndView mav = new ModelAndView();
 		logger.info("Entered into login role page:"+name+":"+password+":"+role+":controller");
 		Accounts accounts=service.loginservice(name,password,role);
+		EmployeeController.userinfo(accounts);
 		mav.addObject("accounts", accounts);
+		if (!(accounts==null)) {
+			
+		
 		if ((accounts.getRole()).equals("EMPLOYEE")) {
+			id=name;
 			mav.setViewName("empprofile");
 		} else {
+			id=name;
 			mav.setViewName("adminprofile");
+		}
+		}else {
+			logger.info("User Not Valid or invalid credentials");
+			mav.setViewName("login");
+			mav.addObject("msg", "User Not Valid or invalid credentials");
 		}
 		return mav;
 	}
@@ -88,7 +109,14 @@ public class AdminController implements ErrorController{
 	public ModelAndView addproduct() {
 		logger.info("Entered into before addproduct controller method");
 		ModelAndView mav=new ModelAndView("addproduct");
-		mav.addObject("products", new Products());
+		String value = env.getProperty("block.url");
+		if(value.equalsIgnoreCase("true")) {
+			mav.addObject("products", new Products());
+		} else {
+			mav.addObject("products", new Products());
+		}
+		
+		
 		return mav;
 	}
 	
